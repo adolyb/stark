@@ -34,13 +34,7 @@ const res = await axios.get('https://min-api.cryptocompare.com/data/price', {
 });
 const ethPrice = res.data.USD
 
-//生成随机数
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
-async function depositETH(privateKey,accountAddress,eth){
+async function depositETH(privateKey,accountAddress,amount){
     const account = new Account(
         provider,
         accountAddress,
@@ -54,7 +48,7 @@ async function depositETH(privateKey,accountAddress,eth){
                     entrypoint: "approve",
                     calldata: CallData.compile({
                         spender: marketAddress,
-                        amount: cairo.uint256(eth*10**18),
+                        amount: cairo.uint256(amount*10**18),
                     })
                 },
                 {
@@ -62,7 +56,7 @@ async function depositETH(privateKey,accountAddress,eth){
                     entrypoint: "deposit",
                     calldata: CallData.compile({
                         token: ethAddress,
-                        amount:eth*10**18
+                        amount:amount*10**18
                     })
                 },
                 {
@@ -81,6 +75,10 @@ async function depositETH(privateKey,accountAddress,eth){
     }catch (err){
         console.log(err.message)
     }
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 async function borrowUSDC(privateKey,accountAddress) { //判断存入资产，但是没有计算USDC的debt，默认是你的之前没借过款的。所以用之前最好还清UDSC或者还到剩一点点
@@ -113,7 +111,7 @@ async function borrowUSDC(privateKey,accountAddress) { //判断存入资产，�
     
     while (true) {
         if (supply!=0) {
-            const amt = Math.round(supply*ethPrice*10**6*getRandomInt(500,700)/1000) //随机借钱，这里默认是50%-70%，可以自己改，最好别超过75%
+            const amt = Math.round(supply*ethPrice*10**6*getRandomInt(500,700)/1000) //随机借钱，这里默认是50%-70%，可以自己改，最好别超过75%。
             try{
                 await account.execute(
                     [
@@ -135,7 +133,7 @@ async function borrowUSDC(privateKey,accountAddress) { //判断存入资产，�
             }
             break
         }else{
-            console.log("存入的ETH尚未到账");
+            console.log("无抵押物");
         }
     }
 }

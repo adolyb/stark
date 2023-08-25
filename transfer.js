@@ -6,7 +6,7 @@ const sleep = (delay) => new Promise(resolve=>setTimeout(resolve,delay))
 const provider = new RpcProvider({nodeUrl:config.rpc})
 const ethAddress = '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7';
 
-async function getTransferFee(privateKey,address){
+async function getTransferFee(privateKey,address,to,amount){
     
     const account = new Account(
         provider,
@@ -18,8 +18,8 @@ async function getTransferFee(privateKey,address){
         contractAddress: ethAddress,
         entrypoint: "transfer",
         calldata: [
-            "0x06c788c9c1a1917c460a28f71ee8601abb0d2ee203a41f7da00e4237935355c0",
-            100,
+            to,
+            amount*10**18,
             "0"
         ]
     });
@@ -29,7 +29,7 @@ async function getTransferFee(privateKey,address){
     return estimatedFee1
 }
 
-async function transferETH(to,amount,privateKey,address){
+async function transferETH(to,amount,privateKey,address){ //转账以太
     if (to.length != 66) {
         throw new Error('address format error')
     }
@@ -42,6 +42,7 @@ async function transferETH(to,amount,privateKey,address){
     })
 
     balance= ethers.utils.formatUnits(balance.result[0],18)
+    console.log(`当前余额为${balance}`);
     if (amount>balance) {
         throw new Error('余额不足')
     }
@@ -65,9 +66,10 @@ async function transferETH(to,amount,privateKey,address){
             }
         ]
     )
+    console.log(`已转账${amount}至${to}`);
 }
 
-async function transferAllETH(to,privateKey,address){
+async function transferAllETH(to,privateKey,address){ //转账所有以太
     if (to.length != 66) {
         throw new Error('address format error')
     }
@@ -76,7 +78,6 @@ async function transferAllETH(to,privateKey,address){
         address,
         privateKey
     );
-    const fee = await getTransferFee(privateKey,address)* 11n / 10n
 
     let balance  = await provider.callContract({
         contractAddress:ethAddress,
@@ -86,7 +87,11 @@ async function transferAllETH(to,privateKey,address){
         ]
     })
 
+    console.log(`当前余额为${ethers.utils.formatUnits(balance.result[0],18)}`);
+
     balance= ethers.utils.formatUnits(balance.result[0],0)
+
+    const fee = await getTransferFee(privateKey,address,to,balance)* 105n / 100n
 
     await account.execute(
         [
@@ -101,4 +106,5 @@ async function transferAllETH(to,privateKey,address){
             }
         ]
     )
+    console.log(`已转账所有以太至${to}`);
 }

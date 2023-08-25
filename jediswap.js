@@ -27,7 +27,7 @@ const response = await axios.get('https://min-api.cryptocompare.com/data/price',
 });
 const ethPrice = response.data.USD
 
-async function swapEthToUsdc(privateKey,accountAddress,eth,slippage=0.99){ //privatekey-私钥，eth-你要兑换的以太数量，slippage-滑点不能超过1
+async function swapEthToUsdc(privateKey,accountAddress,amount,slippage=0.99){ //privatekey-私钥，amount-你要兑换的以太数量，slippage-滑点不能超过1
     const account = new Account(
         provider,
         accountAddress,
@@ -41,16 +41,16 @@ async function swapEthToUsdc(privateKey,accountAddress,eth,slippage=0.99){ //pri
                     entrypoint: "approve",
                     calldata: CallData.compile({
                         spender: '0x041fd22b238fa21cfcf5dd45a8548974d8263b3a531a60388411c5e230f97023',
-                        amount: cairo.uint256(eth*10**18),
+                        amount: cairo.uint256(amount*10**18),
                     })
                 },
                 {
                     contractAddress: '0x041fd22b238fa21cfcf5dd45a8548974d8263b3a531a60388411c5e230f97023',
                     entrypoint: "swap_exact_tokens_for_tokens",
                     calldata:[
-                        eth*10**18,
+                        amount*10**18,
                         "0",
-                        Math.round(eth*ethPrice*10**6*slippage),
+                        Math.round(amount*ethPrice*10**6*slippage),
                         "0",
                         2,
                         "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
