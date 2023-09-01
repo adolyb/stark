@@ -62,8 +62,9 @@ async function swapEthToUsdc(privateKey,accountAddress,amount,slippage=0.99){ //
             ]
         )
         // await sleep(53456)
+        await provider.waitForTransaction(multiCall.transaction_hash,{successStates:["ACCEPTED_ON_L2"]});
         console.log(`已提交swap，请在区块链浏览器查看`);
-        // await provider.waitForTransaction(multiCall.transaction_hash);
+
         
     }catch (err){
         console.log(err.message)

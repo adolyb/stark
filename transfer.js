@@ -1,4 +1,4 @@
-import { RpcProvider,Account,CallData} from "starknet";
+import { RpcProvider,Account} from "starknet";
 import { ethers} from "ethers";
 import config from "./wallet.json" assert {type: 'json'};
 

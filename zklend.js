@@ -69,7 +69,7 @@ async function depositETH(privateKey,accountAddress,amount){
 
             ]
         )
-        // await provider.waitForTransaction(multiCall.transaction_hash);
+        await provider.waitForTransaction(multiCall.transaction_hash,{successStates:["ACCEPTED_ON_L2"]});
         // await sleep(56300)
         console.log("存入ETH成功");
     }catch (err){
@@ -127,7 +127,7 @@ async function borrowUSDC(privateKey,accountAddress) { //判断存入资产，�
                 )
                 // await sleep(69280)
                 console.log(`成功借出${amt/10**6} USDC`);
-                // await provider.waitForTransaction(multiCall.transaction_hash);
+                await provider.waitForTransaction(multiCall.transaction_hash,{successStates:["ACCEPTED_ON_L2"]});
             }catch(e){
                 console.log(e.message);
             }
@@ -166,7 +166,7 @@ async function repayAll(privateKey,accountAddress) {
                 }
             ]
         )
-        // await provider.waitForTransaction(multiCall.transaction_hash);
+        await provider.waitForTransaction(multiCall.transaction_hash,{successStates:["ACCEPTED_ON_L2"]});
         // await sleep(60300)
         const response = await axios.get(`https://data.app.zklend.com/users/${accountAddress}/all`, {
             headers: {
@@ -211,7 +211,7 @@ async function withdrawAll(privateKey,accountAddress) {
                 }
             ]
         )
-        // await provider.waitForTransaction(multiCall.transaction_hash);
+        await provider.waitForTransaction(multiCall.transaction_hash,{successStates:["ACCEPTED_ON_L2"]});
         // await sleep(120000)
         console.log("已取出所有以太");
     }catch(e){
