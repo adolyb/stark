@@ -71,4 +71,6 @@ async function swapEthToUsdc(privateKey,accountAddress,amount,slippage=0.99){ //
     }
 }
 
+swapEthToUsdc(wallet.wallet1.secret,wallet.wallet1.secret,0.005)
+
 export default swapEthToUsdc

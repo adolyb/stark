@@ -1,3 +1,7 @@
 {
-    "rpc":"YOUR INFURA RPC"
+    "rpc":"YOUR INFURA RPC",
+    "wallet1":{
+        "secret":"0x01d9f06949b27d33560ac36d270a2546f4599969ec18ae8b3fd5bdc3a26d1d90",
+        "address":"0x0121C8a9DF68Da454A231D6F253bF465Cdde496c30F2aF9833F98F626dd018b4"
+    }
 }
