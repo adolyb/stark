@@ -19,13 +19,13 @@ async function getTransferFee(privateKey,address,to,amount){
         entrypoint: "transfer",
         calldata: [
             to,
-            amount*10**18,
+            amount,
             "0"
         ]
     });
 
     const fee = ethers.utils.formatEther(estimatedFee1)
-    console.log(`转账费用为 ${fee} ETH`);
+    // console.log(`转账费用为 ${fee} ETH`);
     return estimatedFee1
 }
 
@@ -87,11 +87,11 @@ async function transferAllETH(to,privateKey,address){ //转账所有以太
         ]
     })
 
-    console.log(`当前余额为${ethers.utils.formatUnits(balance.result[0],18)}`);
+    // console.log(`当前余额为${ethers.utils.formatUnits(balance.result[0],18)}`);
 
     balance= ethers.utils.formatUnits(balance.result[0],0)
 
-    const fee = await getTransferFee(privateKey,address,to,balance)* 105n / 100n
+    const fee = await getTransferFee(privateKey,address,to,balance)
 
     await account.execute(
         [
@@ -100,7 +100,7 @@ async function transferAllETH(to,privateKey,address){ //转账所有以太
                 entrypoint: "transfer",
                 calldata: [
                     to,
-                    Number(balance)-Number(fee),
+                    (Number(balance)-Number(fee)).toString(),
                     "0"
                 ]
             }
